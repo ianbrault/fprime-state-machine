@@ -8,7 +8,11 @@
 #define Components_ImuManager_HPP
 
 #include "Components/ImuManager/ImuManagerComponentAc.hpp"
+#include "Components/ImuManager/ImuManager_ImuDataSerializableAc.hpp"
 #include "Components/ImuManager/ImuTypes.hpp"
+#include "Components/ImuManager/ImuManager_GyroscopeRangeEnumAc.hpp"
+
+#include "Components/ImuManager/ImuManager_AccelerationRangeEnumAc.hpp"
 
 namespace Components {
 
@@ -50,13 +54,27 @@ private:
     Drv::I2cStatus read_reset(U8& value);
 
     //! Enable on the IMU
-    // Drv::I2cStatus enable();
+    Drv::I2cStatus enable();
 
     //! Configure the IMU's accelerometer and gyroscope
-    // Drv::I2cStatus configure_device();
+    Drv::I2cStatus configure_device();
+
+    //! Convert enum to register value
+    U8 accelerometer_range_to_register(ImuManager_AccelerationRange range);
+
+    //! Convert enum to register value
+    U8 gyroscope_range_to_register(ImuManager_GyroscopeRange range);
 
     //! Read IMU data
-    // Drv::I2cStatus read(ImuData& imuData);
+    Drv::I2cStatus read(ImuManager_ImuData& imuData);
+
+    //! Deserialize raw IMU data
+    MpuImu::RawImuData deserialize_raw_data(Fw::Buffer& buffer);
+
+    //! Convert raw IMU data
+    ImuManager_ImuData convert_raw_data(const MpuImu::RawImuData& raw,
+                                      const ImuManager_AccelerationRange& accelerationRange,
+                                      const ImuManager_GyroscopeRange& gyroscopeRange);
 
 private:
   // ----------------------------------------------------------------------
